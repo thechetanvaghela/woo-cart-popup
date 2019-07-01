@@ -1,0 +1,92 @@
+/**
+ * All of the CSS for your public-facing functionality should be
+ * included in this file.
+ */
+
+ /*******************************
+* MODAL AS LEFT/RIGHT SIDEBAR
+* Add "left" or "right" in modal parent div, after class="modal".
+* Get free snippets on bootpen.com
+* https://codepen.io/bootpen/pen/jbbaRa
+*******************************/
+.woo-cart-popup.modal.left .modal-dialog,
+.woo-cart-popup.modal.right .modal-dialog {
+	position: fixed;
+	margin: auto;
+	width: 320px;
+	height: 100%;
+	-webkit-transform: translate3d(0%, 0, 0);
+	    -ms-transform: translate3d(0%, 0, 0);
+	     -o-transform: translate3d(0%, 0, 0);
+	        transform: translate3d(0%, 0, 0);
+}
+
+.woo-cart-popup.modal.left .modal-content,
+.woo-cart-popup.modal.right .modal-content {
+	height: 100%;
+	overflow-y: auto;
+}
+
+.woo-cart-popup.modal.left .modal-body,
+.woo-cart-popup.modal.right .modal-body {
+	padding: 15px 15px 80px;
+}
+
+/*Left*/
+.woo-cart-popup.modal.left.fade .modal-dialog{
+	left: -320px;
+	-webkit-transition: opacity 0.3s linear, left 0.3s ease-out;
+	   -moz-transition: opacity 0.3s linear, left 0.3s ease-out;
+	     -o-transition: opacity 0.3s linear, left 0.3s ease-out;
+	        transition: opacity 0.3s linear, left 0.3s ease-out;
+}
+
+.woo-cart-popup.modal.left.fade.show .modal-dialog,
+.woo-cart-popup.modal.left.fade.in .modal-dialog{
+	left: 0;
+}
+    
+/*Right*/
+.woo-cart-popup.modal.right.fade .modal-dialog {
+	right: -320px;
+	-webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
+	   -moz-transition: opacity 0.3s linear, right 0.3s ease-out;
+	     -o-transition: opacity 0.3s linear, right 0.3s ease-out;
+	        transition: opacity 0.3s linear, right 0.3s ease-out;
+}
+
+.woo-cart-popup.modal.right.fade.show .modal-dialog,
+.woo-cart-popup.modal.right.fade.in .modal-dialog {
+	right: 0;
+}
+
+/* ----- MODAL STYLE ----- */
+.woo-cart-popup .modal-content {
+	border-radius: 0;
+	border: none;
+}
+
+.woo-cart-popup .modal-header {
+	border-bottom-color: #EEEEEE;
+	background-color: #FAFAFA;
+}
+
+.woo-cart-popup-button-container{
+    background-color: #ffffff;
+    bottom: 30px;
+    position: fixed;
+    left: 30px;
+    padding: 20px;
+       border: 1px solid red;
+    border-radius: 15px;
+ }
+
+.woo-cart-popup-count-container{
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: red;
+    padding: 5px 13px;
+    border-radius: 50%;
+    color: #fff;
+}

@@ -1,6 +1,53 @@
 (function( $ ) {
 	'use strict';
 
+
+	jQuery(document).on('click', '.wcp_remove_from_cart_button', function(e) {
+	    e.preventDefault();
+	    var _this_product = $(this).data('product_id');
+	    $.ajax({
+	        type: "POST",
+	        url: frontend_ajax_object.ajaxurl,
+	        data: {
+	                action: 'wcp_remove_item_from_cart', 
+	                wcp_security : frontend_ajax_object.ajax_nonce,
+	               'cart_item_key': String($(this).data('cart_item_key'))
+	               },
+	         success: function(data){
+	         	$( document.body ).trigger( 'wc_fragment_refresh' );
+                //jQuery("#wcp-product-"+_this_product).remove();
+                cuteHide(jQuery("#wcp-product-"+_this_product));
+             }
+	    });
+	});
+
+	function cuteHide(el) {
+	  el.animate({opacity: '0'}, 150, function(){
+	    el.animate({height: '0px'}, 150, function(){
+	      el.remove();
+	    });
+	  });
+	}
+
+	jQuery(document).on('click', '.wcp-cart-empty-btn', function(e) {
+	    e.preventDefault();
+	    var r = confirm("Are you Sure?");
+		if (r == true) {
+		    $.ajax({
+		        type: "POST",
+		        url: frontend_ajax_object.ajaxurl,
+		        data: {
+		                action: 'wcp_empty_cart', 
+		                wcp_security : frontend_ajax_object.ajax_nonce,
+		               },
+		         success: function(data){
+		         	$( document.body ).trigger( 'wc_fragment_refresh' );
+	                //jQuery("#wcp-product-"+_this_product).remove();
+	             }
+		    });
+	    } 
+	});
+
 	/**
 	 * All of the code for your public-facing JavaScript source
 	 * should reside in this file.

@@ -15,7 +15,7 @@
  * @wordpress-plugin
  * Plugin Name:       Woo Cart Popup
  * Plugin URI:        http://chetanvaghela.cf/blog/woo-cart-popup
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Description:       Woo Cart Popup displays all added product items to cart in a popup.
  * Version:           1.0.0
  * Author:            Chetan Vaghela
  * Author URI:        https://chetanvaghela.cf/
@@ -32,10 +32,25 @@ if ( ! defined( 'WPINC' ) ) {
 
 /**
  * Currently plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
+ * plugin_dir_path
  */
 define( 'WOO_CART_POPUP_VERSION', '1.0.0' );
+define( 'WCP_PLUGIN_DIR', plugin_dir_path(__FILE__) );
+
+
+/**
+* deactivate plugin on deactivation of woocommerce
+*/
+add_action( 'deactivated_plugin','wcp_detect_plugin_deactivation',99,2 );
+function wcp_detect_plugin_deactivation( $plugin, $network_activation ) {
+    if ($plugin=="woocommerce/woocommerce.php")
+    {
+    	add_action('update_option_active_plugins', 'deactivate_wcp_plugin_itself');    
+    }
+}
+function deactivate_wcp_plugin_itself(){
+  	deactivate_plugins( plugin_basename( __FILE__ ) );
+}
 
 /**
  * The code that runs during plugin activation.

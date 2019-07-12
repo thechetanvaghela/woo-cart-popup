@@ -52,13 +52,6 @@ class Woo_Cart_Popup_Admin {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
 		$this->load_required_files();
-
-
-		add_action( 'widgets_init', array($this,  'woo_cart_popup_widgets_init' ));
-		add_action( 'admin_init', array($this,  'woo_cart_popup_insert_widget_in_sidebar' ));
-
-		add_action( 'admin_notices', array( $this, 'wc_requirement_notice' ) );
-
 	}
 
 	/**
@@ -83,65 +76,31 @@ class Woo_Cart_Popup_Admin {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-woo-cart-setting.php';
 
-		//require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-woo-cart-popup-widgets.php';
-
 	}
 
-	public function woo_cart_popup_widgets_init() {
+	/**
+	*	wcp_detect_plugin_deactivation
+	*   deactivate plugin if woocommerce being deactivate
+	*/
+	/*public function wcp_detect_plugin_deactivation( $plugin, $network_activation ) {
+	    if ($plugin=="woocommerce/woocommerce.php")
+	    {
+	        deactivate_plugins("woo-cart-popup/woo-cart-popup.php");
 
+	    }
+	}*/
 
-			register_sidebar( array(
-				'name'          => esc_html__( 'Woo Cart Popup', 'woocommerce' ),
-				'id'            => 'sidebar-woo-cart-popup',
-				'description'   => esc_html__( 'Add widgets here.', 'woocommerce' ),
-				'before_widget' => '<section id="%1$s" class="widget %2$s">',
-				'after_widget'  => '</section>',
-				'before_title'  => '<h2 class="widget-title">',
-				'after_title'   => '</h2>',
-			) );
-			/*$active_sidebars = get_option( 'sidebars_widgets' ); //get all sidebars and widgets
-			$widget_options = get_option( 'woocommerce_widget_cart' );
-			$widget_options[1] = array( 'option1' => 'value', 'option2' => 'value2' );
-			if(isset($active_sidebars['sidebar-woo-cart-popup']) && empty($active_sidebars['sidebar-woo-cart-popup'])) { //check if sidebar exists and it is empty
-
-			    $active_sidebars['sidebar-woo-cart-popup'] = array('woocommerce_widget_cart'); //add a widget to sidebar
-			    update_option('woocommerce_widget_cart', $widget_options); //update widget default options
-			    update_option('sidebars_widgets', $active_sidebars); //update sidebars
-			}*/
-
-	}
-
-	function woo_cart_popup_insert_widget_in_sidebar() {
-		// Retrieve sidebars, widgets and their instances
-		$widget_id = "woocommerce_widget_cart";
-		$sidebar = "sidebar-woo-cart-popup";
-		$sidebars_widgets = get_option( 'sidebars_widgets', array() );
-		$widget_instances = get_option( 'widget_' . $widget_id, array() );
-		// Retrieve the key of the next widget instance
-		$numeric_keys = array_filter( array_keys( $widget_instances ), 'is_int' );
-		$next_key = $numeric_keys ? max( $numeric_keys ) + 1 : 2;
-		// Add this widget to the sidebar
-		if ( ! isset( $sidebars_widgets[ $sidebar ] ) ) {
-			$sidebars_widgets[ $sidebar ] = array();
-		}
-		$sidebars_widgets[ $sidebar ][] = $widget_id . '-' . $next_key;
-		// Add the new widget instance
-		$widget_instances[ $next_key ] = $widget_data;
-
-		if(isset($sidebars_widgets['sidebar-woo-cart-popup']) && empty($sidebars_widgets['sidebar-woo-cart-popup'])) {
-			// Store updated sidebars, widgets and their instances
-			update_option( 'sidebars_widgets', $sidebars_widgets );
-			update_option( 'widget_' . $widget_id, $widget_instances );
-		}
-	}
-
-	public function wc_requirement_notice() {
+	/**
+	*  wcp_wc_requirement_notice
+	*  Display Woocommerce plugin requre notice
+	*/
+	public function wcp_wc_requirement_notice() {
 				
 		if ( ! $this->is_wc_active() ) {
 			
 			$class = 'notice notice-error';
 			
-			$text    = esc_html__( 'WooCommerce', 'woocommerce' );
+			$text    = esc_html__( 'WooCommerce', 'woo-cart-popup' );
 			$link    = esc_url( add_query_arg( array(
 				                                   'tab'       => 'plugin-information',
 				                                   'plugin'    => 'woocommerce',
@@ -149,12 +108,16 @@ class Woo_Cart_Popup_Admin {
 				                                   'width'     => '640',
 				                                   'height'    => '500',
 			                                   ), admin_url( 'plugin-install.php' ) ) );
-			$message = wp_kses( __( "<strong>WooCommerce Cart Popup</strong> is an add-on of ", 'woocommerce' ), array( 'strong' => array() ) );
+			$message = wp_kses( __( "<strong>Woo Cart Popup</strong> requires WooCommerce to be installed and active. Please Install/Active ", 'woo-cart-popup' ), array( 'strong' => array() ) );
 			
 			printf( '<div class="%1$s"><p>%2$s <a class="thickbox open-plugin-details-modal" href="%3$s"><strong>%4$s</strong></a></p></div>', $class, $message, $link, $text );
 		}
 	}
 
+	/**
+	*  is_wc_active
+	*  check Woocommerce plugin is active or not
+	*/
 	public function is_wc_active() {
 		return class_exists( 'WooCommerce' );
 	}

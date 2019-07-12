@@ -78,20 +78,6 @@ class Woo_Cart_Popup {
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
-
-		//if(class_exists( 'WooCommerce' ))
-		//{
-			/**
-			*	This action used to add content in footer.
-			*/
-			add_action('wp_footer', array($this,'add_woo_cart_popup_html_in_footer'));
-
-			/**
-			*	woocommerce ajax function.
-			*/
-			add_filter( 'woocommerce_add_to_cart_fragments', array($this,'woo_cart_popup_count_fragments'), 10, 1 );
-		//}
-
 	}
 
 	/**
@@ -139,56 +125,10 @@ class Woo_Cart_Popup {
 
 	}
 
-	/**
-	 * add_woo_cart_popup_html_in_footer
-	 * @since    1.0.0
-	 */
-	function add_woo_cart_popup_html_in_footer() {
-		$get_display_at =  get_option('woo-cart-popup-display-at');
-		$display_at =  !empty($get_display_at) ? $get_display_at : "right";
-		?>
-		<div class="woo-cart-popup-button-container">
-			<a class="woo-cart-popup-btn" data-toggle="modal" data-target="#cart-widget-Modal"><img src="<?php echo plugin_dir_url( __FILE__ )?>/images/cart-btn-icon.png" alt="" /><div class="woo-cart-popup-count-container"><span class="woo-cart-popup-count"><?php echo WC()->cart->get_cart_contents_count(); ?></span></div></a>
-		</div>
-		<!-- Modal -->
-		<div class="woo-cart-popup modal <?php echo $display_at; ?> fade" id="cart-widget-Modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
+	
 
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<h4 class="modal-title" id="myModalLabel2">Your Cart <span class="woo-cart-popup-count">(<?php echo WC()->cart->get_cart_contents_count(); ?>)</span>
-						</h4>
-					</div>
 
-					<div class="modal-body">
-						<?php
-						if ( is_active_sidebar( 'sidebar-woo-cart-popup' ) ) : 
-								dynamic_sidebar( 'sidebar-woo-cart-popup' ); 
-						 endif;
-						?>
-					</div>
-
-				</div><!-- modal-content -->
-			</div><!-- modal-dialog -->
-		</div><!-- modal -->
-
-		<?php
-
-	}
-
-	/**
-	 * woo_cart_popup_count_fragments
-	 * @since    1.0.0
-	 */
-	function woo_cart_popup_count_fragments( $fragments ) {
-    
-	    $fragments['span.woo-cart-popup-count'] = '<span class="woo-cart-popup-count">' . WC()->cart->get_cart_contents_count() . '</span>';
-	    
-	    return $fragments;
-	    
-	}
-
+	
 
 	/**
 	 * Define the locale for this plugin for internationalization.
@@ -220,7 +160,8 @@ class Woo_Cart_Popup {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-
+		/*Admin Notice Woocommerce Require*/
+		$this->loader->add_action( 'admin_notices', $plugin_admin, 'wcp_wc_requirement_notice' );
 	}
 
 	/**
@@ -236,7 +177,15 @@ class Woo_Cart_Popup {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
+		//if ( class_exists( 'WooCommerce' ) ) {
+			$this->loader->add_action( 'wp_footer', $plugin_public, 'add_woo_cart_popup_html_in_footer' );
+			$this->loader->add_action( 'wcp_content', $plugin_public, 'wcp_get_cart_content' );
+			$this->loader->add_filter( 'woocommerce_add_to_cart_fragments', $plugin_public, 'woo_cart_popup_count_fragments' );
+			$this->loader->add_action( 'wp_ajax_wcp_remove_item_from_cart', $plugin_public, 'wcp_remove_item_from_cart' );
+			$this->loader->add_action( 'wp_ajax_nopriv_wcp_remove_item_from_cart', $plugin_public, 'wcp_remove_item_from_cart' );
+			$this->loader->add_action( 'wp_ajax_wcp_empty_cart', $plugin_public, 'wcp_empty_cart' );
+			$this->loader->add_action( 'wp_ajax_nopriv_wcp_empty_cart', $plugin_public, 'wcp_empty_cart' );
+		//}
 	}
 
 	/**

@@ -30,7 +30,7 @@ class Woo_Cart_Popup_Deactivator {
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {
-		add_action( 'admin_notices', array($this,'wcp_deactivation_notice') );
+		add_action( 'admin_notices','wcp_deactivation_notice');
 	}
 
 	public function wcp_deactivation_notice() {
